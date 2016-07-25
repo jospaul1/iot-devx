@@ -1,0 +1,17 @@
+---
+applications:
+- services:
+  - iottool-cloudantNoSQLDB
+  - iottool-IoT
+  memory: 512M
+  instances: 1
+  name: iottool
+  host: iottool
+  disk_quota: 1024M
+declared-services:
+  iottool-cloudantNoSQLDB:
+    label: cloudantNoSQLDB
+    plan: Shared
+  iottool-IoT:
+    label: iotf-service
+    plan: iotf-service-free

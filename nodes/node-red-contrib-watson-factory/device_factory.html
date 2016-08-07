@@ -1,0 +1,175 @@
+<script type="text/javascript">
+    RED.nodes.registerType('device-factory',{
+        category: 'Watson IoT',
+        color: '#8087a9',
+        defaults: {
+            auth : { value : "bluemix" },
+            name : { value : "" },
+            apiKey : { 
+                type : "wiotp",
+                required: false,
+                validate: function(v) {
+                    var auth = $("#node-input-auth").val();
+                    return auth === 'bluemix' || (v != '' && v!='_ADD_');
+                }
+            },
+            deviceType : { value : "" },
+            method : {value:  "GetAll"},
+            deviceId : { value : "" },
+            password : { value : "" }
+        },
+        inputs:1,
+        outputs:1,
+        icon: "bridge.png",
+        label: function() {
+            return this.name || this.deviceId || "Device Factory";
+        },
+        oneditprepare: function() {
+
+            var selectedDt = this.deviceType;
+
+            $.getJSON('devicefactory/gettypes',function(data) {
+                //get the list of device types
+                
+                var deviceTypeSelect = $('#node-input-deviceType');
+                if(data) {
+                    
+                    var items = data.results;
+                    $.each(items, function (i, item) {
+                        deviceTypeSelect.append($('<option>', { 
+                            value: item.id,
+                            text : item.id 
+                        }));
+                    });
+                }
+
+                if(selectedDt) {
+                    deviceTypeSelect.val(selectedDt);
+                }
+            });
+
+            $("#node-input-method").on('change', function(){
+                if(this.value === "GetAll"){
+                    $("#dev-id-cont").hide();
+                }else {
+                    $("#dev-id-cont").show();
+                }
+
+            });
+
+            $("#node-input-auth").on('change', function(){
+                if(this.value === "bluemix"){
+                    $("#node-input-apiKey-div").hide();
+                }else {
+                    $("#node-input-apiKey-div").show();
+                }
+
+            });
+        
+        },
+        oneditsave: function() {
+            var auth = $("#node-input-auth").val();
+            if (auth === 'bluemix') {
+                $("#node-input-apiKey").val('_ADD_');
+            }
+            
+        }
+
+    });
+</script>
+
+<script type="text/x-red" data-template-name="device-factory">
+
+    <div class="form-row">
+        <label for="node-input-auth"><!-- <i class="fa fa-unlock"> --></i>Authentication</label>
+        <select type="text" id="node-input-auth" style="width:72%;">
+            <option value="bluemix">Bluemix Service</option>
+            <option value="api" >API Key</option>
+        </select>
+    </div>
+
+    <div class="form-row" id = "node-input-apiKey-div">
+        <label for="node-input-apiKey" id="node-input-apiKeyLabel"><i class="fa fa-key"></i> API Key</label>
+        <input type="text" id="node-input-apiKey" placeholder="API Key" style="width:300px;">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-method"><i class="fa fa-cogs"></i> Operation</label>
+        <select type="text" id="node-input-method" style="width:72%;">
+            <option value="GetAll">List Devices on the IoT Platform</option>
+            <option value="Create" >Add Device for a specific Device Type</option>
+            <option value="Get">Get Device with supplied Device Id</option>            
+            <option value="Update">Update Device with supplied Device Id</option>
+            <option value="Delete">Delete Device with supplied Device Id</option>
+            <option value="GetLoc">Get Device location details</option>
+            <option value="UpdateLoc">Update Device location details</option>
+            <option value="GetDm">Get Device management information</option>
+            <!-- <option value="Get all gw">List devices connected via gateway</option> -->
+        </select>
+    </div>
+
+    <div class="form-row" id="node-form-row-deviceType">
+        <label for="node-input-deviceType"><i class="fa fa-sitemap"></i> Device Type</label>
+        <select type="text" list="exampleList" id="node-input-deviceType" style="width: 260px;">
+            <option value=""></option>
+        </select>
+        
+        <a class="editor-button" id="node-input-deviceType-link" href="#" target="_new"><i class="fa fa-external-link" /></a>
+    </div>
+
+    <div class="form-row" id="dev-id-cont">
+        <label for="node-input-deviceId"><i class="fa fa-plug"></i> Device Id</label>
+        <input type="text" id="node-input-deviceId" placeholder="e.g device1"  >
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+
+</script>
+
+<script type="text/x-red" data-help-name="device-factory">
+    <p>TO DO UPDATE</p>
+</script>
+
+<!-- Node for storing the apikey and auth token creds -->
+<script type="text/x-red" data-template-name="wiotp">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-user"><i class="fa fa-user-secret"></i> API Key</label>
+        <input type="text" id="node-config-input-user">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-pass"><i class="fa fa-lock"></i> API Token</label>
+        <input type="password" id="node-config-input-password">
+    </div>
+
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('wiotp',{
+        category : 'config',
+        color : "#8087a9",
+        defaults : {
+            name : { value:"" },
+
+        },
+
+        label: function() {
+            return this.name;
+        },
+
+        oneditprepare: function() {
+        },
+
+        credentials: {
+            user: {type:"text"},
+            password: {type:"password"}
+        }
+    });
+</script>

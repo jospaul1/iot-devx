@@ -28,6 +28,12 @@
 
             var selectedDt = this.deviceType;
 
+            $.getJSON('devicefactory/vcap',function(data) {
+                console.log(data);
+                var orgId = data.credentials.org;
+                $("#node-input-deviceType-link").attr('href','https://'+orgId+'.internetofthings.ibmcloud.com/dashboard/#/devices/deviceTypes');
+            });
+
             $.getJSON('devicefactory/gettypes',function(data) {
                 //get the list of device types
                 
@@ -93,6 +99,15 @@
         <input type="text" id="node-input-apiKey" placeholder="API Key" style="width:300px;">
     </div>
 
+    <div class="form-row" id="node-form-row-deviceType">
+        <label for="node-input-deviceType"><i class="fa fa-sitemap"></i> Device Type</label>
+        <select type="text" list="exampleList" id="node-input-deviceType" style="width: 260px;">
+            <option value=""></option>
+        </select>
+        
+        <a class="editor-button" id="node-input-deviceType-link" href="#" target="_new"><i class="fa fa-external-link" /></a>
+    </div>
+
     <div class="form-row">
         <label for="node-input-method"><i class="fa fa-cogs"></i> Operation</label>
         <select type="text" id="node-input-method" style="width:72%;">
@@ -106,15 +121,6 @@
             <option value="GetDm">Get Device management information</option>
             <!-- <option value="Get all gw">List devices connected via gateway</option> -->
         </select>
-    </div>
-
-    <div class="form-row" id="node-form-row-deviceType">
-        <label for="node-input-deviceType"><i class="fa fa-sitemap"></i> Device Type</label>
-        <select type="text" list="exampleList" id="node-input-deviceType" style="width: 260px;">
-            <option value=""></option>
-        </select>
-        
-        <a class="editor-button" id="node-input-deviceType-link" href="#" target="_new"><i class="fa fa-external-link" /></a>
     </div>
 
     <div class="form-row" id="dev-id-cont">
@@ -131,7 +137,46 @@
 </script>
 
 <script type="text/x-red" data-help-name="device-factory">
-    <p>TO DO UPDATE</p>
+    <p>This node will help you to perform actions on devices in the IBM Watson IoT Platform</p>
+    <p>
+        <b>Authentication</b> Authentication type. <br/> 
+        1. <i>Bluemix Service</i> - Uses the Watson IoT service bound to this application<br/> 
+        2. <i>API Key</i> - Use the API key of your Organization of Watson IoT Platform<br/><br/>
+
+        <b>Device Type</b> Lists the Device types present in your organization. You can press on the link to open up the Watson IoT Dashboard to create new Device types.
+        You can also pass this value from payload as <code>msg.payload.deviceType</code>. But values present in configuration takes more precedence.<br/><br/>
+
+        <b>Operation </b> that can be performed on the device on Watson IoT Platform. For more information, visit <a target="_blank" href="https://docs.internetofthings.ibmcloud.com/swagger/v0002.html#!/Devices/">swagger page</a>. You can also pass the value from <i>msg</i> as <code>msg.operation</code><br/><br/>
+
+        All the input must be passed from <code>msg.payload</code> <br/><br/>
+        For example, for creating a device following JSON must be passed from <code>msg.payload</code>
+        <pre>
+{
+    "deviceId": "string",
+    "authToken": "string",
+    "deviceInfo": {
+        "serialNumber": "string",
+        "manufacturer": "string",
+        "model": "string",
+        "deviceClass": "string",
+        "description": "string",
+        "fwVersion": "string",
+        "hwVersion": "string",
+        "descriptiveLocation": "string"
+    },
+    "location": {
+        "longitude": 0,
+        "latitude": 0,
+        "elevation": 0,
+        "accuracy": 0,
+        "measuredDateTime": "2016-08-07T18:50:51.553Z"
+    },
+    "metadata": {}
+}
+</pre>
+
+ 
+    </p>
 </script>
 
 <!-- Node for storing the apikey and auth token creds -->

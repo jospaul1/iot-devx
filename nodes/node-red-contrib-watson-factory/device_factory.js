@@ -6,7 +6,6 @@ module.exports = function(RED) {
     var appClient;
     
     //support for multiple orgs
-    
     var wiot_services  = cfEnv.getAppEnv().services['iotf-service'][0];
     console.log(wiot_services);
 
@@ -70,7 +69,7 @@ module.exports = function(RED) {
           node.status({fill:"blue",shape:"dot",text:"Requesting"});
 
           //pass the operation name in msg
-          var operation = msg.method ? msg.method : config.method;
+          var operation = msg.operation ? msg.operation : config.method;
 
           //rest all values from msg.payload
           //try to parse the payload if its string

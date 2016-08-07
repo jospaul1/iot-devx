@@ -20,7 +20,7 @@
     "when": "~3.x",
     "mongodb": "~1.4.x",
     "nano": "~5.11.0",
-    "cfenv":"~1.0.0",
+    "cfenv":"*",
     "feedparser":"~0.19.2",
     "redis":"~0.10.1",
     "node-red": "0.x",
@@ -31,7 +31,8 @@
     "node-red-contrib-bluemix-hdfs":"0.x",
     "node-red-nodes-cf-sqldb-dashdb":"0.x",
     "node-red-dashboard" : "*",
-    "request":"~2.36.0"
+    "request":"~2.36.0",
+    "ibmiotf" : "*"
   },
   "engines": {
     "node": "0.10.x"
